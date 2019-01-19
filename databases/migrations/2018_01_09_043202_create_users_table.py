@@ -7,11 +7,13 @@ class CreateUsersTable(Migration):
         """Run the migrations."""
         with self.schema.create('users') as table:
             table.increments('id')
-            table.string('name')
+            table.string('username')
             table.string('email').unique()
             table.string('password')
+            table.text('token').nullable()
             table.string('remember_token').nullable()
-            table.timestamp('verified_at').nullable()
+            table.string('bio').nullable()
+            table.string('image').nullable()
             table.timestamps()
 
     def down(self):

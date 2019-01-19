@@ -3,6 +3,7 @@
 from masonite.auth import Auth
 from masonite.request import Request
 
+from config import auth
 
 class LoadUserMiddleware:
     """Middleware class which loads the current user into the request."""
@@ -31,3 +32,9 @@ class LoadUserMiddleware:
             request {masonite.request.Request} -- The Masonite request object.
         """
         self.request.set_user(Auth(self.request).user())
+        if self.request.header('HTTP_AUTHORIZATION'):
+            self.request.set_user(auth.AUTH['model'].where(
+                'token', self.request.header('HTTP_AUTHORIZATION').replace('Token ', '')
+                ).first())
+       
+

@@ -1,7 +1,13 @@
 """Web Routes."""
 
-from masonite.routes import Get, Post
+from masonite.routes import RouteGroup
+from masonite.routes import Get, Post, Put
+
+from app.resources.UserResource import UserResource
 
 ROUTES = [
-    Get().route('/', 'WelcomeController@show').name('welcome'),
+    UserResource('/api/users').routes(),
+    Post().route('/api/users/login', 'AuthController@login'),
+    Get().route('/api/user', 'AuthController@currunt_user'),
+    Put().route('/api/user', 'AuthController@update'),
 ]

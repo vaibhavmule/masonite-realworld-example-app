@@ -16,7 +16,7 @@ should contain a simple aggregate of middleware classes.
 
 HTTP_MIDDLEWARE = [
     LoadUserMiddleware,
-    CsrfMiddleware,
+    # CsrfMiddleware,
     ResponseMiddleware,
     MaintenanceModeMiddleware,
 ]
