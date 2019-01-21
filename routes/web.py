@@ -23,6 +23,7 @@ ROUTES = [
 
         # Articles
         Get().route('/articles', 'ArticleController@index'),
+        Get().route('/articles/feed', 'ArticleController@feed'),
         Post().route('/articles', 'ArticleController@create'),
         Get().route('/articles/@slug', 'ArticleController@show'),
         Put().route('/articles/@slug', 'ArticleController@update'),

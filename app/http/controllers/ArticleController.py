@@ -42,6 +42,9 @@ class ArticleController:
             })
         return {'articles': list_of_articles,'articlesCount': len(list_of_articles) }
 
+    def feed(self, request: Request):
+        pass
+
     def show(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
         payload = {
