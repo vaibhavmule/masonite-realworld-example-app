@@ -23,48 +23,15 @@ class ArticleController:
 
         list_of_articles = []
         for article in articles:
-            list_of_articles.append({
-                "slug": article.slug,
-                "title": article.title,
-                "description": article.description,
-                "body": article.body,
-                "tagList": article.tagList,
-                "createdAt": str(article.created_at),
-                "updatedAt": str(article.updated_at),
-                "favorited": False,
-                "favoritesCount": article.favorite_count(),
-                "author": {
-                    "username": article.author.username,
-                    "bio": article.author.bio,
-                    "image": article.author.image,
-                    "following": False
-                }
-            })
-        return {'articles': list_of_articles,'articlesCount': len(list_of_articles) }
+            list_of_articles.append(article.paylaod(request.user()))
+        return {'articles': list_of_articles,'articlesCount': len(list_of_articles)}
 
     def feed(self, request: Request):
         pass
 
     def show(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
-        payload = {
-            "slug": article.slug,
-            "title": article.title,
-            "description": article.description,
-            "body": article.body,
-            "tagList": article.tagList.split(','),
-            "createdAt": str(article.created_at),
-            "updatedAt": str(article.updated_at),
-            "favorited": False,
-            "favoritesCount": article.favorite_count(),
-            "author": {
-                "username": article.author.username,
-                "bio": article.author.bio,
-                "image": article.author.image,
-                "following": False
-            }
-        }   
-        return {'article': payload}
+        return {'article': article.paylaod(request.user())}
 
     def create(self, request: Request):
         article_data = request.input('article')
@@ -78,48 +45,13 @@ class ArticleController:
         article.save()
 
         article = Article.find(article.id)
-        payload = {
-            "slug": article.slug,
-            "title": article.title,
-            "description": article.description,
-            "body": article.body,
-            "tagList": article.tagList.split(','),
-            "createdAt": str(article.created_at),
-            "updatedAt": str(article.updated_at),
-            "favorited": False,
-            "favoritesCount": article.favorite_count(),
-            "author": {
-                "username": article.author.username,
-                "bio": article.author.bio,
-                "image": article.author.image,
-                "following": False
-            }
-        }   
-        return {'article': payload}
+        return {'article': article.paylaod(request.user())}
 
     def update(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
         article.update(request.input('article'))
         article = Article.find(article.id)
-        payload = {
-            "slug": article.slug,
-            "title": article.title,
-            "description": article.description,
-            "body": article.body,
-            "tagList": article.tagList.split(','),
-            "createdAt": str(article.created_at),
-            "updatedAt": str(article.updated_at),
-            "favorited": False,
-            "favoritesCount": article.favorite_count(),
-            "author": {
-                "username": article.author.username,
-                "bio": article.author.bio,
-                "image": article.author.image,
-                "following": False
-            }
-        }
-        return {'article': payload}
-
+        return {'article': article.paylaod(request.user())}
 
     def delete(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
@@ -135,24 +67,7 @@ class ArticleController:
             user_id=request.user().id,
             article_id=article.id
         )
-        payload = {
-            "slug": article.slug,
-            "title": article.title,
-            "description": article.description,
-            "body": article.body,
-            "tagList": article.tagList.split(','),
-            "createdAt": str(article.created_at),
-            "updatedAt": str(article.updated_at),
-            "favorited": True if favorite else False,
-            "favoritesCount": article.favorite_count(),
-            "author": {
-                "username": article.author.username,
-                "bio": article.author.bio,
-                "image": article.author.image,
-                "following": False
-            }
-        }
-        return {'article': payload}
+        return {'article': article.paylaod(request.user(), favorite)}
 
     def unfavorite(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
@@ -162,23 +77,4 @@ class ArticleController:
                 'article_id', article.id
             ).first()
             favorite.delete()
-        favorite = Favorite.where('user_id', request.user().id).where(
-            'article_id', article.id).first()
-        payload = {
-            "slug": article.slug,
-            "title": article.title,
-            "description": article.description,
-            "body": article.body,
-            "tagList": article.tagList.split(','),
-            "createdAt": str(article.created_at),
-            "updatedAt": str(article.updated_at),
-            "favorited": True if favorite else False,
-            "favoritesCount": article.favorite_count(),
-            "author": {
-                "username": article.author.username,
-                "bio": article.author.bio,
-                "image": article.author.image,
-                "following": False
-            }
-        }
-        return {'article': payload}
+        return {'article': article.paylaod(request.user())}
