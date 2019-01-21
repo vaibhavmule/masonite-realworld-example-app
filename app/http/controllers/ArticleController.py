@@ -19,7 +19,7 @@ class ArticleController:
         articles = []
         author = User.where('username', request.input('author', '')).first()
         if author:
-            articles = Article.with_('author').where('author_id', author.id).get()
+            articles = Article.with_('author', 'favorites').where('author_id', author.id).get()
 
         list_of_articles = []
         for article in articles:
@@ -53,27 +53,26 @@ class ArticleController:
         return {'article': article.paylaod(request.user())}
 
     def delete(self, request: Request):
-        article = Article.with_('author').where('slug', request.param('slug')).first()
+        article = Article.where('slug', request.param('slug')).first()
         if article:
             article.delete()
-            return article
+            return ''
 
         return {'error': 'Article does not exist'}
 
     def favorite(self, request: Request):
-        article = Article.with_('author').where('slug', request.param('slug')).first()
-        favorite = Favorite.first_or_create(
-            user_id=request.user().id,
-            article_id=article.id
+        article = Article.where('slug', request.param('slug')).first()
+        favorite = Favorite(
+            user_id=request.user().id
         )
-        return {'article': article.paylaod(request.user(), favorite)}
+        article.favorites().save(favorite)
+        article = Article.with_('author', 'favorites').where('slug', request.param('slug')).first()
+        return {'article': article.paylaod(request.user())}
 
     def unfavorite(self, request: Request):
-        article = Article.with_('author').where('slug', request.param('slug')).first()
+        article = Article.where('slug', request.param('slug')).first()
         if article:
-            favorite = Favorite.where(
-                'user_id', request.user().id).where(
-                'article_id', article.id
-            ).first()
+            favorite = article.favorites.where('user_id', request.user().id).first()
             favorite.delete()
+        article = Article.with_('author', 'favorites').where('slug', request.param('slug')).first()
         return {'article': article.paylaod(request.user())}
