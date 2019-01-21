@@ -19,7 +19,7 @@ class ArticleController:
         articles = []
         author = User.where('username', request.input('author', '')).first()
         if author:
-            articles = Article.where('author_id', author.id).get()
+            articles = Article.with_('author').where('author_id', author.id).get()
 
         list_of_articles = []
         for article in articles:
@@ -30,7 +30,7 @@ class ArticleController:
         pass
 
     def show(self, request: Request):
-        article = Article.where('slug', request.param('slug')).first()
+        article = Article.with_('author').where('slug', request.param('slug')).first()
         return {'article': article.paylaod(request.user())}
 
     def create(self, request: Request):
@@ -44,17 +44,16 @@ class ArticleController:
         article.author_id=request.user().id
         article.save()
 
-        article = Article.find(article.id)
+        article = Article.with_('author').find(article.id)
         return {'article': article.paylaod(request.user())}
 
     def update(self, request: Request):
-        article = Article.where('slug', request.param('slug')).first()
+        article = Article.with_('author').where('slug', request.param('slug')).first()
         article.update(request.input('article'))
-        article = Article.find(article.id)
         return {'article': article.paylaod(request.user())}
 
     def delete(self, request: Request):
-        article = Article.where('slug', request.param('slug')).first()
+        article = Article.with_('author').where('slug', request.param('slug')).first()
         if article:
             article.delete()
             return article
@@ -62,7 +61,7 @@ class ArticleController:
         return {'error': 'Article does not exist'}
 
     def favorite(self, request: Request):
-        article = Article.where('slug', request.param('slug')).first()
+        article = Article.with_('author').where('slug', request.param('slug')).first()
         favorite = Favorite.first_or_create(
             user_id=request.user().id,
             article_id=article.id
@@ -70,7 +69,7 @@ class ArticleController:
         return {'article': article.paylaod(request.user(), favorite)}
 
     def unfavorite(self, request: Request):
-        article = Article.where('slug', request.param('slug')).first()
+        article = Article.with_('author').where('slug', request.param('slug')).first()
         if article:
             favorite = Favorite.where(
                 'user_id', request.user().id).where(

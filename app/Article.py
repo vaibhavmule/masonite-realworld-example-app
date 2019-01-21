@@ -1,6 +1,6 @@
 """ Article Model """
 
-from orator.orm import belongs_to
+from orator.orm import belongs_to, has_many
 
 from app.Favorite import Favorite
 from config.database import Model
@@ -14,6 +14,11 @@ class Article(Model):
     def author(self):
         from app.User import User
         return User
+
+    @has_many
+    def comments(self):
+        from app.Comment import Comment
+        return Comment
 
     def favorite_count(self):
         return Favorite.where('article_id', self.id).count()

@@ -11,43 +11,18 @@ class CommentController(Resource, JSONSerializer):
     methods = ['index', 'create', 'delete']
 
     def index(self):
-        article = Article.where('slug', self.request.param('slug')).first()
-        comments = self.model.where('article_id', article.id).get()
-        
-        payload = [] 
-
-        for comment in comments:
-            payload.append({
-                "id": comment.id,
-                "createdAt": str(comment.created_at),
-                "updatedAt": str(comment.updated_at),
-                "body": comment.body,
-                "author": {
-                    "username": article.author.username,
-                    "bio": article.author.bio,
-                    "image": article.author.image,
-                    "following": False
-                }
-            })
-        return {'comments': payload}
+        article = Article.with_('comments.author').where(
+            'slug', self.request.param('slug')).first()
+        comments = [] 
+        for comment in article.comments:
+            comments.append(comment.payload())
+        return {'comment': comments}
 
     def create(self):
         article = Article.where('slug', self.request.param('slug')).first()
-        comment = self.model.create(
+        comment = self.model(
             body=self.request.input('comment')['body'],
-            article_id=article.id,
             author_id=self.request.user().id
         )
-        payload = {
-            "id": comment.id,
-            "createdAt": str(comment.created_at),
-            "updatedAt": str(comment.updated_at),
-            "body": comment.body,
-            "author": {
-                "username": article.author.username,
-                "bio": article.author.bio,
-                "image": article.author.image,
-                "following": False
-            }
-        }
-        return {'comment': payload}
+        article.comments().save(comment)
+        return {'comment': comment.payload()}
