@@ -6,6 +6,7 @@ from masonite.request import Request
 from slugify import slugify
 
 from app.Article import Article
+from app.Favorite import Favorite
 from app.User import User
 
 from config.database import DB
@@ -123,3 +124,57 @@ class ArticleController:
             article.delete()
             request.status()
         return ''
+
+    def favorite(self, request: Request):
+        article = Article.where('slug', request.param('slug')).first()
+        favorite = Favorite.first_or_create(
+            user_id=request.user().id,
+            article_id=article.id
+        )
+        payload = {
+            "slug": article.slug,
+            "title": article.title,
+            "description": article.description,
+            "body": article.body,
+            "tagList": article.tagList.split(','),
+            "createdAt": str(article.created_at),
+            "updatedAt": str(article.updated_at),
+            "favorited": True if favorite else False,
+            "favoritesCount": Favorite.where('article_id', article.id).count(),
+            "author": {
+                "username": article.author.username,
+                "bio": article.author.bio,
+                "image": article.author.image,
+                "following": False
+            }
+        }
+        return {'article': payload}
+
+    def unfavorite(self, request: Request):
+        article = Article.where('slug', request.param('slug')).first()
+        if article:
+            favorite = Favorite.where(
+                'user_id', request.user().id).where(
+                'article_id', article.id
+            ).first()
+            favorite.delete()
+        favorite = Favorite.where('user_id', request.user().id).where(
+            'article_id', article.id).first()
+        payload = {
+            "slug": article.slug,
+            "title": article.title,
+            "description": article.description,
+            "body": article.body,
+            "tagList": article.tagList.split(','),
+            "createdAt": str(article.created_at),
+            "updatedAt": str(article.updated_at),
+            "favorited": True if favorite else False,
+            "favoritesCount": Favorite.where('article_id', article.id).count(),
+            "author": {
+                "username": article.author.username,
+                "bio": article.author.bio,
+                "image": article.author.image,
+                "following": False
+            }
+        }
+        return {'article': payload}

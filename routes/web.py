@@ -23,5 +23,7 @@ ROUTES = [
     Get().route('/api/articles/@slug', 'ArticleController@show'),
     Put().route('/api/articles/@slug', 'ArticleController@update'),
     Delete().route('/api/articles/@slug', 'ArticleController@delete'),
+    Post().route('/api/articles/@slug/favorite', 'ArticleController@favorite'),
+    Delete().route('/api/articles/@slug/favorite', 'ArticleController@unfavorite'),
 
 ]
