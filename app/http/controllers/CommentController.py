@@ -6,7 +6,7 @@ from app.Comment import Comment
 from app.Follow import Follow
 
 
-class CommentResource(Resource, JSONSerializer):
+class CommentController(Resource, JSONSerializer):
     model = Comment
     methods = ['index', 'create', 'delete']
 

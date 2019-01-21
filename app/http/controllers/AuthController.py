@@ -38,13 +38,3 @@ class AuthController(JWTAuthentication):
             return {'user': user.serialize() }
 
         return {'error': 'invalid authentication credentials'}
-
-    def currunt_user(self, request: Request):
-        token = jwt.decode(request.header('HTTP_AUTHORIZATION').replace('Token ', ''), KEY, algorithms=['HS256'])
-        if pendulum.parse(token['expires']).is_past():
-            raise ExpiredToken
-        return {'user': request.user().serialize()}
-
-    def update(self, request: Request):
-        request.user().update(request.input('user'))
-        return {'user': request.user().serialize()}

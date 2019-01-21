@@ -13,8 +13,7 @@ from config.database import DB
 
 
 class ArticleController:
-    """ArticleController
-    """
+    """ArticleController"""
 
     def index(self, request: Request):
         articles = []
@@ -33,7 +32,7 @@ class ArticleController:
                 "createdAt": str(article.created_at),
                 "updatedAt": str(article.updated_at),
                 "favorited": False,
-                "favoritesCount": 0,
+                "favoritesCount": article.favorite_count(),
                 "author": {
                     "username": article.author.username,
                     "bio": article.author.bio,
@@ -54,7 +53,7 @@ class ArticleController:
             "createdAt": str(article.created_at),
             "updatedAt": str(article.updated_at),
             "favorited": False,
-            "favoritesCount": 0,
+            "favoritesCount": article.favorite_count(),
             "author": {
                 "username": article.author.username,
                 "bio": article.author.bio,
@@ -85,7 +84,7 @@ class ArticleController:
             "createdAt": str(article.created_at),
             "updatedAt": str(article.updated_at),
             "favorited": False,
-            "favoritesCount": 0,
+            "favoritesCount": article.favorite_count(),
             "author": {
                 "username": article.author.username,
                 "bio": article.author.bio,
@@ -108,22 +107,24 @@ class ArticleController:
             "createdAt": str(article.created_at),
             "updatedAt": str(article.updated_at),
             "favorited": False,
-            "favoritesCount": 0,
+            "favoritesCount": article.favorite_count(),
             "author": {
                 "username": article.author.username,
                 "bio": article.author.bio,
                 "image": article.author.image,
                 "following": False
             }
-        }   
+        }
         return {'article': payload}
+
 
     def delete(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
         if article:
             article.delete()
-            request.status()
-        return ''
+            return article
+
+        return {'error': 'Article does not exist'}
 
     def favorite(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
@@ -140,7 +141,7 @@ class ArticleController:
             "createdAt": str(article.created_at),
             "updatedAt": str(article.updated_at),
             "favorited": True if favorite else False,
-            "favoritesCount": Favorite.where('article_id', article.id).count(),
+            "favoritesCount": article.favorite_count(),
             "author": {
                 "username": article.author.username,
                 "bio": article.author.bio,
@@ -169,7 +170,7 @@ class ArticleController:
             "createdAt": str(article.created_at),
             "updatedAt": str(article.updated_at),
             "favorited": True if favorite else False,
-            "favoritesCount": Favorite.where('article_id', article.id).count(),
+            "favoritesCount": article.favorite_count(),
             "author": {
                 "username": article.author.username,
                 "bio": article.author.bio,

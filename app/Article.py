@@ -2,6 +2,7 @@
 
 from orator.orm import belongs_to
 
+from app.Favorite import Favorite
 from config.database import Model
 
 
@@ -13,3 +14,6 @@ class Article(Model):
     def author(self):
         from app.User import User
         return User
+
+    def favorite_count(self):
+        return Favorite.where('article_id', self.id).count()
