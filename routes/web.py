@@ -3,9 +3,7 @@
 from masonite.routes import RouteGroup
 from masonite.routes import Get, Post, Put, Delete
 
-from app.http.controllers.UserController import UserController
 from app.http.controllers.CommentController import CommentController
-from app.http.controllers.ArticleController import ArticleController
 
 
 ROUTES = [
