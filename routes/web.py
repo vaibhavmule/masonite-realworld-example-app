@@ -4,6 +4,8 @@ from masonite.routes import RouteGroup
 from masonite.routes import Get, Post, Put, Delete
 
 from app.resources.UserResource import UserResource
+from app.resources.CommentResource import CommentResource
+
 
 ROUTES = [
     # Authentication
@@ -26,4 +28,5 @@ ROUTES = [
     Post().route('/api/articles/@slug/favorite', 'ArticleController@favorite'),
     Delete().route('/api/articles/@slug/favorite', 'ArticleController@unfavorite'),
 
+    CommentResource('/api/articles/@slug/comments').routes(),
 ]
