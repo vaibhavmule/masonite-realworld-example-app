@@ -16,7 +16,7 @@ class CommentController(Resource, JSONSerializer):
         comments = [] 
         for comment in article.comments:
             comments.append(comment.payload())
-        return {'comment': comments}
+        return {'comments': comments}
 
     def create(self):
         article = Article.where('slug', self.request.param('slug')).first()
