@@ -1,7 +1,7 @@
 from orator.migrations import Migration
 
 
-class Follow(Migration):
+class CreateFollowsTable(Migration):
 
     def up(self):
         """
@@ -10,9 +10,9 @@ class Follow(Migration):
         with self.schema.create('follows') as table:
             table.increments('id')
             table.integer('user_id').unsigned()
-            table.integer('follower_id').unsigned()
-
             table.foreign('user_id').references('id').on('users')
+
+            table.integer('follower_id').unsigned()
             table.foreign('follower_id').references('id').on('users')
             table.timestamps()
 
