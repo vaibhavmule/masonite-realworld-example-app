@@ -40,8 +40,13 @@ class ArticleController:
                 articles = tag.articles().with_('author', 'favorites')
             except:
                 articles = articles.where_in('id', [])
+
+        articles = articles.order_by('created_at', 'desc').paginate(
+            request.input('limit'),
+            request.input('offset')
+        )
         
-        list_of_articles = [article.paylaod(request.user()) for article in articles.get()]
+        list_of_articles = [article.paylaod(request.user()) for article in articles]
         return {'articles': list_of_articles,'articlesCount': len(list_of_articles)}
 
     def feed(self, request: Request):
