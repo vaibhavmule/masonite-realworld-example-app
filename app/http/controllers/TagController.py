@@ -1,10 +1,11 @@
 """ A TagController Module """
 
+from app.Tag import Tag
+
 
 class TagController:
-    """TagController
-    """
+    """TagController."""
 
     def index(self):
-        tags = []
-        return {'tags': tags}
+        tags = Tag.lists('name')
+        return {'tags': tags.serialize()}

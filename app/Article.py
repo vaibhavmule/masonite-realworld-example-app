@@ -1,6 +1,6 @@
 """ Article Model """
 
-from orator.orm import belongs_to, has_many
+from orator.orm import belongs_to, has_many, belongs_to_many
 
 from app.Favorite import Favorite
 from config.database import Model
@@ -8,12 +8,17 @@ from config.database import Model
 
 class Article(Model):
     """Article Model"""
-    __fillable__ = ['title', 'description', 'body', 'tagList']
+    __fillable__ = ['title', 'description', 'body']
 
     @belongs_to('author_id', 'id')
     def author(self):
         from app.User import User
         return User
+
+    @belongs_to_many
+    def tags(self):
+        from app.Tag import Tag
+        return Tag
 
     @has_many
     def comments(self):
@@ -24,6 +29,22 @@ class Article(Model):
     def favorites(self):
         from app.Favorite import Favorite
         return Favorite
+
+    def save_tags(self, tags, type):
+        from app.Tag import Tag
+        tags = [
+            Tag.first_or_create(name=name).id
+            for name in tags
+        ]
+        
+        if type == 'create':
+            self.tags().attach(tags)
+        
+        if type == 'update':
+            self.tags().sync(tags)
+
+        return tags
+
 
     def is_favorite(self, user):
         if user:
@@ -36,7 +57,7 @@ class Article(Model):
             "title": self.title,
             "description": self.description,
             "body": self.body,
-            "tagList": self.tagList.split(','),
+            "tagList": self.tags.lists('name'),
             "createdAt": str(self.created_at),
             "updatedAt": str(self.updated_at),
             "favorited": self.is_favorite(user),

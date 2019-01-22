@@ -33,5 +33,8 @@ ROUTES = [
 
         # Comments
         CommentController('/articles/@slug/comments').routes(),
+
+        # Tags
+        Get().route('/tags', 'TagController@index'),
     ], prefix='/api')
 ]

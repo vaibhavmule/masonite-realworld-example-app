@@ -7,9 +7,8 @@ from slugify import slugify
 
 from app.Article import Article
 from app.Favorite import Favorite
+from app.Tag import Tag
 from app.User import User
-
-from config.database import DB
 
 
 class ArticleController:
@@ -35,21 +34,24 @@ class ArticleController:
 
     def create(self, request: Request):
         article_data = request.input('article')
+        
         article = Article()
         article.slug=slugify(article_data['title'])
         article.title=article_data['title']
         article.description=article_data['description']
         article.body=article_data['body']
-        article.tagList= ','.join(article_data['tagList'])
         article.author_id=request.user().id
         article.save()
 
-        article = Article.with_('author').find(article.id)
+        article.save_tags(request.input('article')['tagList'], 'create')
+        
+        article = Article.with_('author', 'tags').find(article.id)
         return {'article': article.paylaod(request.user())}
 
     def update(self, request: Request):
         article = Article.with_('author').where('slug', request.param('slug')).first()
         article.update(request.input('article'))
+        article.save_tags(request.input('article')['tagList'], 'update')
         return {'article': article.paylaod(request.user())}
 
     def delete(self, request: Request):
