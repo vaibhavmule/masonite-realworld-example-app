@@ -35,6 +35,6 @@ class AuthController(JWTAuthentication):
             user = User.where('email', user_data['email']).first()
             user.token = bytes(jwt.encode(payload, KEY, algorithm='HS256')).decode('utf-8')
             user.save()
-            return {'user': user.serialize() }
+            return {'user': user.serialize()}
 
         return {'error': 'invalid authentication credentials'}
