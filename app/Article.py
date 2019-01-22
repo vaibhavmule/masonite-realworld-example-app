@@ -48,7 +48,7 @@ class Article(Model):
 
     def is_favorite(self, user):
         if user:
-            return bool(self.favorites.where('article_id', self.id).first())
+            return bool(self.favorites.where('user_id', user.id).first())
         return False
 
     def paylaod(self, user):

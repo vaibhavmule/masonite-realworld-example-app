@@ -15,14 +15,33 @@ class ArticleController:
     """ArticleController"""
 
     def index(self, request: Request):
-        articles = []
-        author = User.where('username', request.input('author', '')).first()
-        if author:
-            articles = Article.with_('author', 'favorites').where('author_id', author.id).get()
+        articles = Article.with_('author', 'favorites')
+        
+        user = User.where(
+            'username', request.input('author', '') or request.input('favorited', '')).first()
+        tag = Tag.where('name', request.input('tag', '')).first()
 
-        list_of_articles = []
-        for article in articles:
-            list_of_articles.append(article.paylaod(request.user()))
+        if request.input('author'):
+            try:
+                articles = user.articles().with_('author', 'favorites')
+            except:
+                articles = articles.where_in('id', [])
+
+        if request.input('favorited'):
+            try:
+                article_ids = user.favorites().lists('article_id').serialize()
+            except:
+                article_ids = []
+        
+            articles = articles.where_in('id', article_ids)
+            
+        if request.input('tag'):
+            try:
+                articles = tag.articles().with_('author', 'favorites')
+            except:
+                articles = articles.where_in('id', [])
+        
+        list_of_articles = [article.paylaod(request.user()) for article in articles.get()]
         return {'articles': list_of_articles,'articlesCount': len(list_of_articles)}
 
     def feed(self, request: Request):
@@ -57,6 +76,7 @@ class ArticleController:
     def delete(self, request: Request):
         article = Article.where('slug', request.param('slug')).first()
         if article:
+            article.tags().detach(article.tags.lists('id'))
             article.delete()
             return ''
 

@@ -1,5 +1,7 @@
 """User Model."""
 
+from orator.orm import has_many
+
 from config.database import Model
 
 
@@ -21,3 +23,13 @@ class User(Model):
             'bio': self.bio,
             'following': bool(follow)
         }
+
+    @has_many('author_id')
+    def articles(self):
+        from app.Article import Article
+        return Article
+
+    @has_many
+    def favorites(self):
+        from app.Favorite import Favorite
+        return Favorite
