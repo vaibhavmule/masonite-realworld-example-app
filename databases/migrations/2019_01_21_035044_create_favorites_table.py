@@ -11,10 +11,10 @@ class CreateFavoritesTable(Migration):
             table.increments('id')
 
             table.integer('user_id').unsigned()
-            table.foreign('user_id').references('id').on('users').on_delete('cascade')
+            table.foreign('user_id').references('id').on('users')
 
             table.integer('article_id').unsigned()
-            table.foreign('article_id').references('id').on('articles').on_delete('cascade')
+            table.foreign('article_id').references('id').on('articles')
             
             table.timestamps()
 

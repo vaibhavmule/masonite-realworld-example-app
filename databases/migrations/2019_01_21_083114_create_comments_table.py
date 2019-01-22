@@ -12,10 +12,10 @@ class CreateCommentsTable(Migration):
             table.text('body')
 
             table.integer('article_id').unassined()
-            table.foreign('article_id').references('id').on('articles').on_delete('cascade')
+            table.foreign('article_id').references('id').on('articles')
 
             table.integer('author_id').unassined()
-            table.foreign('author_id').references('id').on('users').on_delete('cascade')
+            table.foreign('author_id').references('id').on('users')
             table.timestamps()
 
     def down(self):

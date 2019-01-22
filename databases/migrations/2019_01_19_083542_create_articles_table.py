@@ -16,7 +16,7 @@ class CreateArticlesTable(Migration):
             table.string('tagList')
 
             table.integer('author_id').unsigned()
-            table.foreign('author_id').references('id').on('users').on_delete('cascade')
+            table.foreign('author_id').references('id').on('users')
             table.timestamps()
 
     def down(self):
