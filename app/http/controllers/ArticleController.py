@@ -85,7 +85,8 @@ class ArticleController:
     def update(self, request: Request):
         article = Article.with_('author').where('slug', request.param('slug')).first()
         article.update(request.input('article'))
-        article.save_tags(request.input('article')['tagList'], 'update')
+        if 'tagList' in request.input('article'):
+            article.save_tags(request.input('article')['tagList'], 'update')
         return {'article': article.paylaod(request.user())}
 
     def delete(self, request: Request):
