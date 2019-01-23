@@ -25,7 +25,7 @@ class ArticleController:
             try:
                 articles = user.articles().with_('author', 'favorites')
             except:
-                articles = articles.where_in('id', [])
+                articles = []
 
         if request.input('favorited'):
             try:
@@ -34,20 +34,22 @@ class ArticleController:
                 article_ids = []
         
             articles = articles.where_in('id', article_ids)
-            
+
         if request.input('tag'):
             try:
-                articles = tag.articles().with_('author', 'favorites')
+                article_ids = tag.articles().lists('article_id').serialize()
             except:
-                articles = articles.where_in('id', [])
+                article_ids = []
+            articles = articles.where_in('id', article_ids)
 
-        articles = articles.order_by('created_at', 'desc').paginate(
-            request.input('limit'),
-            request.input('offset')
-        )
-        
+        if articles:
+            articles = articles.order_by('created_at', 'desc').paginate(
+                request.input('limit'),
+                request.input('offset')
+            )
+
         list_of_articles = [article.paylaod(request.user()) for article in articles]
-        return {'articles': list_of_articles,'articlesCount': len(list_of_articles)}
+        return {'articles': list_of_articles, 'articlesCount': len(list_of_articles)}
 
     def feed(self, request: Request):
         pass
