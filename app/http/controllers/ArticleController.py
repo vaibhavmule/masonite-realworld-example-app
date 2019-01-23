@@ -52,7 +52,15 @@ class ArticleController:
         return {'articles': list_of_articles, 'articlesCount': len(list_of_articles)}
 
     def feed(self, request: Request):
-        pass
+        users = request.user().followed_users().lists('user_id').serialize()
+        articles = Article.with_('author', 'favorites').where_in('author_id', users)
+        if articles:
+            articles = articles.order_by('created_at', 'desc').paginate(
+                request.input('limit'),
+                request.input('offset')
+            )
+        list_of_articles = [article.paylaod(request.user()) for article in articles]
+        return {'articles': list_of_articles, 'articlesCount': len(list_of_articles)}
 
     def show(self, request: Request):
         article = Article.with_('author').where('slug', request.param('slug')).first()

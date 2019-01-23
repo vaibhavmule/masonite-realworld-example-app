@@ -33,3 +33,8 @@ class User(Model):
     def favorites(self):
         from app.Favorite import Favorite
         return Favorite
+
+    @has_many('follower_id')
+    def followed_users(self):
+        from app.Follow import Follow
+        return Follow
