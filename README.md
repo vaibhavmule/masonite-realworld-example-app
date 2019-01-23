@@ -13,6 +13,8 @@ We've gone to great lengths to adhere to the Masonite community styleguides & be
 For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
 # Installation
+```
 $ pipenv install
 $ craft serve 
+```
 Go to http://localhost:8000/
