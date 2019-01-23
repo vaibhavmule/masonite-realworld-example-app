@@ -1,28 +1,33 @@
-from api.resources import Resource
-from api.serializers import JSONSerializer
+from masonite.request import Request
 
 from app.Article import Article
 from app.Comment import Comment
 from app.Follow import Follow
 
 
-class CommentController(Resource, JSONSerializer):
-    model = Comment
-    methods = ['index', 'create', 'delete']
+class CommentController:
 
-    def index(self):
+    def index(self, request: Request):
         article = Article.with_('comments.author').where(
-            'slug', self.request.param('slug')).first()
+            'slug', request.param('slug')).first()
         comments = [] 
         for comment in article.comments:
             comments.append(comment.payload())
         return {'comments': comments}
 
-    def create(self):
-        article = Article.where('slug', self.request.param('slug')).first()
-        comment = self.model(
-            body=self.request.input('comment')['body'],
-            author_id=self.request.user().id
+    def create(self, request: Request):
+        article = Article.where('slug', request.param('slug')).first()
+        comment = Comment(
+            body=request.input('comment')['body'],
+            author_id=request.user().id
         )
         article.comments().save(comment)
         return {'comment': comment.payload()}
+
+    def delete(self, request: Request):
+        comment = Comment.find(request.param('id'))
+        if comment:
+            comment.delete()
+            return ''
+
+        return {'error': 'Comment does not exist'}

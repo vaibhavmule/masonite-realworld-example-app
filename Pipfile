@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 masonite = ">=2.1.0,<2.2.0"
-masonite-api = "*"
 "psycopg2-binary" = "*"
 pyjwt = "*"
 python-slugify = "*"

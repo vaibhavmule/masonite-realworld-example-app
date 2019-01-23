@@ -32,7 +32,11 @@ ROUTES = [
         Delete().route('/articles/@slug/favorite', 'ArticleController@unfavorite'),
 
         # Comments
-        CommentController('/articles/@slug/comments').routes(),
+        RouteGroup([
+            Get().route('/comments', 'CommentController@index'),
+            Post().route('/comments', 'CommentController@create'),
+            Delete().route('/comments/@id', 'CommentController@delete'),
+        ], prefix='/articles/@slug'),
 
         # Tags
         Get().route('/tags', 'TagController@index'),
