@@ -16,4 +16,5 @@ matrix:
       script: travis_retry coverage run -m pytest && codecov
 
 install:
+- pip install pipenv --upgrade
 - pipenv install
