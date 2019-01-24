@@ -12,6 +12,7 @@ python-slugify = "*"
 [dev-packages]
 pylint = "*"
 masonite-cli = "*"
+codecov = "*"
 
 [requires]
 python_version = "3.7"
