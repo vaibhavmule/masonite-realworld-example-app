@@ -4,17 +4,10 @@ before_script:
   - psql -c 'create database conduit;' -U postgres
 
 python:
-- '3.4'
 - '3.5'
-
-matrix:
-  include:
-    - python: 3.7
-      dist: xenial
-      sudo: true
-    - python: 3.6
-      script: travis_retry coverage run -m pytest && codecov
+- '3.6'
 
 install:
 - pip install pipenv --upgrade
 - pipenv install
+- travis_retry coverage run -m pytest && codecov
