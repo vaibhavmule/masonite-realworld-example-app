@@ -1,40 +1,22 @@
-""" A AuthController Module """
-import jwt
-import pendulum
+"""A AuthController Module"""
 
 from masonite.auth import Auth
 from masonite.request import Request
 
-from api.authentication import JWTAuthentication
-from api.exceptions import NoApiTokenFound, ExpiredToken, InvalidToken
-
-from config.application import KEY 
 from app.User import User
+from app.validators.AuthValidator import AuthValidator
 
 
-class AuthController(JWTAuthentication):
-    """AuthController
-    """
+class AuthController:
+    """AuthController."""
 
     def login(self, request: Request):
-        user_data = request.input('user')
-        if not user_data['email'] or not user_data['password']:
-            return {'error': 'missing username or password'}
-
-        if Auth(request).once().login(
-            user_data['email'],
-            user_data['password'],
-        ):
-            payload = {
-                'issued': str(pendulum.now()),
-                'expires': str(pendulum.now().add(minutes=1)),
-                'refresh': str(pendulum.now().add(days=1)),
-                'scopes': request.input('scopes'),
-            }
-
-            user = User.where('email', user_data['email']).first()
-            user.token = bytes(jwt.encode(payload, KEY, algorithm='HS256')).decode('utf-8')
-            user.save()
-            return {'user': user.serialize()}
-
-        return {'error': 'invalid authentication credentials'}
+        validate = AuthValidator(request).login_form()
+        if validate.check():
+            user_data = request.input('user')
+            if Auth(request).once().login(user_data['email'], user_data['password']):
+                user = User.where('email', user_data['email']).first()
+                user.generate_token()
+                return {'user': user.serialize()}
+        request.status(403)
+        return {'errors': validate.errors()}
