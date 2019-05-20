@@ -5,15 +5,14 @@ from masonite.auth import Auth
 from masonite.request import Request
 from masonite.helpers import password as bcrypt_password
 
-from api.authentication import JWTAuthentication
-from api.exceptions import NoApiTokenFound, ExpiredToken, InvalidToken
+from api.exceptions import ExpiredToken
 
-from config.application import KEY 
+from config.application import KEY
 from app.User import User
 
 
 class UserController:
-    """UserController""" 
+    """UserController"""
 
     def create(self, request: Request):
         user_data = request.input('user')

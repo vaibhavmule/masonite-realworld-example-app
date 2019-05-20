@@ -263,6 +263,13 @@
             "index": "pypi",
             "version": "==2.1.12"
         },
+        "masonite-api": {
+            "hashes": [
+                "sha256:e36020a002188bcba855c20bc9598005e05ccf3180c2cffba126edd3b93d0119"
+            ],
+            "index": "pypi",
+            "version": "==0.0.3"
+        },
         "masonite-entry": {
             "hashes": [
                 "sha256:73723e37ebcb69ed26056a0b392baabab1f73696288285e2dc624e92efa3325c"
