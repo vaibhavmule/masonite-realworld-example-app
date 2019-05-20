@@ -1,8 +1,6 @@
 """Web Routes."""
 
-from masonite.routes import RouteGroup
-from masonite.helpers.routes import get, post, put, delete
-
+from masonite.routes import RouteGroup, Get as get, Post as post, Put as put, Delete as delete
 
 ROUTES = [
     RouteGroup([

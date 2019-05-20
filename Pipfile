@@ -9,6 +9,7 @@ masonite = ">=2.1.0,<2.2.0"
 pyjwt = "*"
 python-slugify = "*"
 masonite-api = "*"
+"eb62984" = {file = "https://github.com/MasoniteFramework/core/archive/develop.zip"}
 
 [dev-packages]
 pylint = "*"
