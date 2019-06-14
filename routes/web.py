@@ -1,40 +1,40 @@
 """Web Routes."""
 
-from masonite.routes import RouteGroup, Get as get, Post as post, Put as put, Delete as delete
+from masonite.routes import RouteGroup, Get, Post, Put, Delete
 
 ROUTES = [
     RouteGroup([
         # Authentication
-        post('/users/login', 'AuthController@login'),
+        Post('/users/login', 'AuthController@login'),
 
         # User
-        post('/users', 'UserController@create'),
-        get('/user', 'UserController@currunt_user'),
-        put('/user', 'UserController@update'),
+        Post('/users', 'UserController@create'),
+        Get('/user', 'UserController@currunt_user'),
+        Put('/user', 'UserController@update'),
 
         # Profiles
-        get('/profiles/@username', 'ProfileController@show'),
-        post('/profiles/@username/follow', 'ProfileController@follow'),
-        delete('/profiles/@username/follow', 'ProfileController@unfollow'),
+        Get('/profiles/@username', 'ProfileController@show'),
+        Post('/profiles/@username/follow', 'ProfileController@follow'),
+        Delete('/profiles/@username/follow', 'ProfileController@unfollow'),
 
         # Articles
-        get('/articles', 'ArticleController@index'),
-        get('/articles/feed', 'ArticleController@feed'),
-        post('/articles', 'ArticleController@create'),
-        get('/articles/@slug', 'ArticleController@show'),
-        put('/articles/@slug', 'ArticleController@update'),
-        delete('/articles/@slug', 'ArticleController@delete'),
-        post('/articles/@slug/favorite', 'ArticleController@favorite'),
-        delete('/articles/@slug/favorite', 'ArticleController@unfavorite'),
+        Get('/articles', 'ArticleController@index'),
+        Get('/articles/feed', 'ArticleController@feed'),
+        Post('/articles', 'ArticleController@create'),
+        Get('/articles/@slug', 'ArticleController@show'),
+        Put('/articles/@slug', 'ArticleController@update'),
+        Delete('/articles/@slug', 'ArticleController@delete'),
+        Post('/articles/@slug/favorite', 'ArticleController@favorite'),
+        Delete('/articles/@slug/favorite', 'ArticleController@unfavorite'),
 
         # Comments
         RouteGroup([
-            get('/comments', 'CommentController@index'),
-            post('/comments', 'CommentController@create'),
-            delete('/comments/@id', 'CommentController@delete'),
+            Get('/comments', 'CommentController@index'),
+            Post('/comments', 'CommentController@create'),
+            Delete('/comments/@id', 'CommentController@delete'),
         ], prefix='/articles/@slug'),
 
         # Tags
-        get('/tags', 'TagController@index'),
+        Get('/tags', 'TagController@index'),
     ], prefix='/api')
 ]
