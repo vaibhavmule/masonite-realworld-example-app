@@ -67,9 +67,8 @@ class ArticleController:
     def create(self, request: Request, validator: Validator, validate: Validator):
         article_data = request.input('article')
 
-        errors = validator.validate(
-            article_data,
-            validate.required(['title', 'description', 'body']),
+        errors = request.validate(
+            validate.required(['article.title', 'article.description', 'article.body']),
         )
         if errors:
             request.status(422)
@@ -80,7 +79,7 @@ class ArticleController:
         article.title=article_data['title']
         article.description=article_data['description']
         article.body=article_data['body']
-        article.author_id=request.user().id
+        article.author_id=request.yser
         article.save()
 
         article.save_tags(request.input('article')['tagList'], 'create')
