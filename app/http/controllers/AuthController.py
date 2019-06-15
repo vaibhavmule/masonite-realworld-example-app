@@ -1,5 +1,3 @@
-"""A AuthController Module"""
-
 from masonite.auth import Auth
 from masonite.request import Request
 
@@ -7,7 +5,6 @@ from app.User import User
 
 
 class AuthController:
-    """AuthController."""
 
     def login(self, request: Request, auth: Auth):
         user_data = request.input('user')

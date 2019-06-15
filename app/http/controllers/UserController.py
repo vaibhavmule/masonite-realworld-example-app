@@ -4,6 +4,7 @@ import pendulum
 from masonite.auth import Auth
 from masonite.request import Request
 from masonite.helpers import password as bcrypt_password
+from masonite.validation import Validator
 
 from api.exceptions import ExpiredToken
 
@@ -12,10 +13,17 @@ from app.User import User
 
 
 class UserController:
-    """UserController"""
 
-    def create(self, request: Request):
+    def create(self, request: Request, validator: Validator, validate: Validator):
         user_data = request.input('user')
+        errors = validator.validate(
+            user_data,
+            validate.required(['email', 'password', 'username']),
+        )
+        if errors:
+            request.status(422)
+            return {'errors': errors}
+
         user = User.create(
             email=user_data['email'],
             password=bcrypt_password(user_data['password']),
@@ -24,6 +32,7 @@ class UserController:
             image=None,
             token=None
         )
+        request.status(201)
         return {'user': user.serialize()}
 
     def currunt_user(self, request: Request):

@@ -1,7 +1,7 @@
-""" A ArticleController Module """
 import json 
 
 from masonite.request import Request
+from masonite.validation import Validator
 
 from slugify import slugify
 
@@ -12,11 +12,9 @@ from app.User import User
 
 
 class ArticleController:
-    """ArticleController"""
 
     def index(self, request: Request):
         articles = Article.with_('author', 'favorites')
-        
         user = User.where(
             'username', request.input('author', '') or request.input('favorited', '')).first()
         tag = Tag.where('name', request.input('tag', '')).first()
@@ -47,7 +45,7 @@ class ArticleController:
                 request.input('limit'),
                 request.input('offset')
             )
-
+        print(articles)
         list_of_articles = [article.paylaod(request.user()) for article in articles]
         return {'articles': list_of_articles, 'articlesCount': len(list_of_articles)}
 
@@ -66,8 +64,16 @@ class ArticleController:
         article = Article.with_('author').where('slug', request.param('slug')).first()
         return {'article': article.paylaod(request.user())}
 
-    def create(self, request: Request):
+    def create(self, request: Request, validator: Validator, validate: Validator):
         article_data = request.input('article')
+
+        errors = validator.validate(
+            article_data,
+            validate.required(['title', 'description', 'body']),
+        )
+        if errors:
+            request.status(422)
+            return {'errors': errors}
         
         article = Article()
         article.slug=slugify(article_data['title'])
@@ -80,6 +86,7 @@ class ArticleController:
         article.save_tags(request.input('article')['tagList'], 'create')
         
         article = Article.with_('author', 'tags').find(article.id)
+        request.status(201)
         return {'article': article.paylaod(request.user())}
 
     def update(self, request: Request):
@@ -94,7 +101,7 @@ class ArticleController:
         if article:
             article.tags().detach(article.tags.lists('id'))
             article.delete()
-            return ''
+            return request.status(204)
 
         return {'error': 'Article does not exist'}
 
