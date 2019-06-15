@@ -79,7 +79,7 @@ class ArticleController:
         article.title=article_data['title']
         article.description=article_data['description']
         article.body=article_data['body']
-        article.author_id=request.yser
+        article.author_id = request.user().id
         article.save()
 
         article.save_tags(request.input('article')['tagList'], 'create')
