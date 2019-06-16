@@ -7,8 +7,18 @@ from config.database import Model
 
 
 class Article(Model):
-    """Article Model"""
-    __fillable__ = ['title', 'description', 'body']
+    """Model Definition (generated with love by Masonite) 
+
+    id: integer default: None
+    slug: string(255) default: None
+    title: string(255) default: None
+    description: string(255) default: None
+    body: text default: None
+    author_id: integer default: None
+    created_at: datetime default: CURRENT_TIMESTAMP
+    updated_at: datetime default: CURRENT_TIMESTAMP
+    """
+    __fillable__ = ['title', 'description', 'body', 'slug', 'author_id']
 
     @belongs_to('author_id', 'id')
     def author(self):
@@ -51,7 +61,7 @@ class Article(Model):
             return bool(self.favorites.where('user_id', user.id).first())
         return False
 
-    def paylaod(self, user):
+    def payload(self, user):
         return {
             "slug": self.slug,
             "title": self.title,
