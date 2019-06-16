@@ -13,3 +13,4 @@ PyJWT = "*"
 [dev-packages]
 pylint = "*"
 masonite-cli = "*"
+pytest = "*"
