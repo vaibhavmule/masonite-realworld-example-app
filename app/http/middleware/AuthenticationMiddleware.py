@@ -1,24 +1,18 @@
 """Authentication Middleware."""
 
 from masonite.request import Request
-
+from masonite.response import Response
 
 class AuthenticationMiddleware:
     """Middleware To Check If The User Is Logged In."""
 
-    def __init__(self, request: Request):
-        """Inject Any Dependencies From The Service Container.
-
-        Arguments:
-            Request {masonite.request.Request} -- The Masonite request object
-        """
+    def __init__(self, request: Request, response: Response):
         self.request = request
+        self.response = response
 
     def before(self):
-        """Run This Middleware Before The Route Executes."""
         if not self.request.user():
-            self.request.redirect_to('login')
+            return self.response.json({'errors': 'Unauthorized request'}, status=401)
 
     def after(self):
-        """Run This Middleware After The Route Executes."""
         pass
