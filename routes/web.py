@@ -8,7 +8,7 @@ ROUTES = [
         Post('/users/login', 'AuthController@login'),
 
         # User
-        Post('/users', 'UserController@create').middleware('auth'),
+        Post('/users', 'UserController@create'),
         Get('/user', 'UserController@currunt_user').middleware('auth'),
         Put('/user', 'UserController@update').middleware('auth'),
 
