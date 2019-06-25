@@ -69,7 +69,7 @@ class TestArticle(TestCase):
         self.assertEqual(article.slug, 'this-is-a-title')
         self.assertEqual(article.tags.count(), 0)
 
-        self.json('PUT', '/api/articles/this-is-a-title', {
+        self.actingAs(User.find(1)).json('PUT', '/api/articles/this-is-a-title', {
             "article": {
                 "slug": "this-is-another-slug",
                 "title": "How to train your dragon",
@@ -95,7 +95,7 @@ class TestArticle(TestCase):
         article = Article.where('slug', 'delete-this-article').first()
         self.assertEqual(article.slug, 'delete-this-article')
 
-        self.json('DELETE', '/api/articles/delete-this-article')
+        self.actingAs(User.find(1)).delete('/api/articles/delete-this-article')
 
         article = Article.where('slug', 'delete-this-article').first()
         self.assertFalse(article)
