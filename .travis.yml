@@ -11,6 +11,6 @@ install:
   - pip install masonite_cli
   - pip install -r requirements.txt
 script:
-  - python -m pytest
+  - python -m pytest --cov-report term --cov-report xml --cov=tests
 after_success:
   - codecov

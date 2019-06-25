@@ -6,3 +6,4 @@ venv
 .vscode
 .pytest_cache
 masonite.db
+coverage.xml
