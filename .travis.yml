@@ -1,0 +1,21 @@
+language: python
+python:
+- '3.4'
+- '3.5'
+matrix:
+  include:
+  - python: 3.7
+    dist: xenial
+    sudo: true
+  - python: 3.6
+    script: python -m pytest && coveralls
+install:
+
+- pip install masonite_cli
+- pip install -e .[hashids]
+- pip install -r requirements.txt
+
+script:
+- travis_retry python -m pytest
+- flake8 src/ --ignore=E501,F401,E128,E402,E731,F821,E712,W503
+
