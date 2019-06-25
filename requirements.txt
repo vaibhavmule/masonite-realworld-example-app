@@ -5,5 +5,4 @@ coverage
 PyJWT
 psycopg2-binary
 python-slugify
-masonite-api
 pytest-cov 
