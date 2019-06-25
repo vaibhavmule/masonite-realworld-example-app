@@ -1,6 +1,7 @@
-masonite>=2.1.0,<2.2.0
+masonite
 pytest
 codecov
+coverage
 PyJWT
 psycopg2-binary
 python-slugify
