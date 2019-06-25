@@ -1,8 +1,6 @@
 masonite
 pytest
 codecov
-coverage
 PyJWT
 psycopg2-binary
-python-slugify
-pytest-cov 
+python-slugify 
