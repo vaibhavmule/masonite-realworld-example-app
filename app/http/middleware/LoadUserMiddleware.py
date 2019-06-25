@@ -3,18 +3,19 @@
 from masonite.auth import Auth
 from masonite.request import Request
 
-from config import auth
+from config import auth as auth_config
 
 class LoadUserMiddleware:
     """Middleware class which loads the current user into the request."""
 
-    def __init__(self, request: Request):
+    def __init__(self, request: Request, auth: Auth):
         """Inject Any Dependencies From The Service Container.
 
         Arguments:
             Request {masonite.request.Request} -- The Masonite request object.
         """
         self.request = request
+        self.auth = auth
 
     def before(self):
         """Run This Middleware Before The Route Executes."""
@@ -31,9 +32,9 @@ class LoadUserMiddleware:
         Arguments:
             request {masonite.request.Request} -- The Masonite request object.
         """
-        self.request.set_user(Auth(self.request).user())
+        self.request.set_user(self.auth.user())
         if self.request.header('HTTP_AUTHORIZATION'):
-            self.request.set_user(auth.AUTH['model'].where(
+            self.request.set_user(auth_config.AUTH['model'].where(
                 'token', self.request.header('HTTP_AUTHORIZATION').replace('Token ', '')
                 ).first())
        

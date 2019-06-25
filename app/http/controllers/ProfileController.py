@@ -1,11 +1,9 @@
-""" A ProfileController Module """
 from masonite.request import Request
 
 from app.User import User
 from app.Follow import Follow
 
 class ProfileController:
-    """ProfileController."""
 
     def show(self, request: Request):
         user = User.where('username', request.param('username')).first()
