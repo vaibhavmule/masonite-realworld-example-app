@@ -95,7 +95,7 @@ class TestArticle(TestCase):
         article = Article.where('slug', 'delete-this-article').first()
         self.assertEqual(article.slug, 'delete-this-article')
 
-        self.json('DELETE', '/api/articles/delete-this-article')
+        ok = self.delete('/api/articles/delete-this-article')
 
         article = Article.where('slug', 'delete-this-article').first()
         self.assertFalse(article)
