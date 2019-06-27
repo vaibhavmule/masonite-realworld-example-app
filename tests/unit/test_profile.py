@@ -6,7 +6,6 @@ from masonite.helpers import password
 
 
 class TestProfile(TestCase):
-
     """All tests by default will run inside of a database transaction."""
     transactions = True
 
@@ -38,16 +37,16 @@ class TestProfile(TestCase):
                 .json('GET', '/api/profiles/Joe123').hasJson('profile.username', 'Joe123')
         )
 
-    # def test_user_can_follow(self):
-    #     self.assertTrue(
-    #         self.actingAs(User.find(2))
-    #             .json('POST', '/api/profiles/Joe123/follow').hasJson('profile.following', True)
-    #     )
+    def test_user_can_follow(self):
+        self.assertTrue(
+            self.actingAs(User.find(2))
+                .json('POST', '/api/profiles/Joe123/follow').hasJson('profile.following', True)
+        )
 
-    # def test_user_can_unfollow(self):
-    #     self.actingAs(User.find(2)).json('DELETE', '/api/profiles/Joe123/follow')
+    def test_user_can_unfollow(self):
+        self.actingAs(User.find(2)).json('DELETE', '/api/profiles/Joe123/follow')
 
-    #     self.assertTrue(
-    #         self.actingAs(User.find(2))
-    #             .json('POST', '/api/profiles/Joe123/follow').hasJson('profile.following', False)
-    #     )
+        self.assertTrue(
+            self.actingAs(User.find(2))
+                .json('POST', '/api/profiles/Joe123/follow').hasJson('profile.following', False)
+        )
