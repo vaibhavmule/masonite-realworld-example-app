@@ -14,6 +14,7 @@ class UserController:
 
     def __init__(self, request: Request):
         self.request = request
+        self.user = request.user()
 
     def create(self):
         errors = self.request.validate(
@@ -37,12 +38,13 @@ class UserController:
         return {'user': user.serialize()}
 
     def current_user(self, request: Request):
-        token = jwt.decode(request.header('HTTP_AUTHORIZATION').replace('Token ', ''), KEY, algorithms=['HS256'])
+        token = jwt.decode(request.header('HTTP_AUTHORIZATION').replace(
+            'Token ', ''), KEY, algorithms=['HS256'])
         if pendulum.parse(token['expires']).is_past():
             request.status(401)
             return {'error': 'Your token has expired'}
         return {'user': request.user().serialize()}
 
     def update(self):
-        self.request.user().update(self.request.input('user'))
-        return {'user': self.request.user().serialize()}
+        self.user.update(self.request.input('user'))
+        return {'user': self.user.serialize()}
