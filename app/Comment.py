@@ -1,4 +1,4 @@
-""" Comment Model """
+"""Comment Model."""
 
 from orator.orm import belongs_to
 

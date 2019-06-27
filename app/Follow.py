@@ -5,7 +5,7 @@ from orator.orm import belongs_to
 from config.database import Model
 
 class Follow(Model):
-    """Follow Model"""
+    """Follow Model."""
 
     __fillable__ = ['user_id', 'follower_id']
 

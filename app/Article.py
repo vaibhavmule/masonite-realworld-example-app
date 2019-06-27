@@ -1,4 +1,4 @@
-""" Article Model """
+"""Article Model."""
 
 from orator.orm import belongs_to, has_many, belongs_to_many
 
@@ -7,7 +7,7 @@ from config.database import Model
 
 
 class Article(Model):
-    """Model Definition (generated with love by Masonite) 
+    """Model Definition (generated with love by Masonite).
 
     id: integer default: None
     slug: string(255) default: None

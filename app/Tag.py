@@ -1,4 +1,4 @@
-""" Tag Model """
+"""Tag Model."""
 
 from orator.orm import belongs_to_many
 
@@ -6,8 +6,7 @@ from config.database import Model
 
 
 class Tag(Model):
-    """Tag Model
-    """
+    """Tag Model."""
 
     __fillable__ = ['name']
 

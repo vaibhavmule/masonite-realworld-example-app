@@ -1,4 +1,4 @@
-""" Favorite Model """
+"""Favorite Model."""
 
 from orator.orm import belongs_to
 
