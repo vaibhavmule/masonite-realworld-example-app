@@ -1,13 +1,14 @@
 """TestArticle Testcase."""
 
 from masonite.testing import TestCase
+from masonite.helpers import password
+
 from app.Article import Article
 from app.User import User
-from masonite.helpers import password
+from app.Follow import Follow
 
 
 class TestArticle(TestCase):
-
     """All tests by default will run inside of a database transaction."""
     transactions = True
 
@@ -30,6 +31,17 @@ class TestArticle(TestCase):
             'image': '',
             'token': None
         })
+
+        User.create({
+            'username': 'Bob123',
+            'email': 'Bob123@example.com',
+            'password': password('secret')
+        })
+
+        Follow.first_or_create(
+            user_id=1,
+            follower_id=2
+        )
 
         Article.create({
             'title': 'this is a title',
@@ -122,4 +134,8 @@ class TestArticle(TestCase):
             self.actingAs(User.find(1)).json('GET','/api/articles/feed').hasJson({
                 'articles': []
             })
+        )
+
+        self.assertTrue(
+            self.actingAs(User.find(2)).json('GET', '/api/articles/feed').hasAmount('articles', 2)
         )
