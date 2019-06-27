@@ -9,23 +9,28 @@ ROUTES = [
 
         # User
         Post('/users', 'UserController@create'),
-        Get('/user', 'UserController@currunt_user').middleware('auth'),
+        Get('/user', 'UserController@current_user').middleware('auth'),
         Put('/user', 'UserController@update').middleware('auth'),
 
         # Profiles
-        Get('/profiles/@username', 'ProfileController@show'),
-        Post('/profiles/@username/follow', 'ProfileController@follow').middleware('auth'),
-        Delete('/profiles/@username/follow', 'ProfileController@unfollow').middleware('auth'),
+        RouteGroup([
+            Get('', 'ProfileController@show'),
+            Post('follow', 'ProfileController@follow'),
+            Delete('follow', 'ProfileController@unfollow'),
+        ], middleware=('auth',), prefix='/profiles/@username'),
 
         # Articles
         Get('/articles', 'ArticleController@index'),
-        Get('/articles/feed', 'ArticleController@feed').middleware('auth'),
-        Post('/articles', 'ArticleController@create').middleware('auth'),
         Get('/articles/@slug', 'ArticleController@show'),
-        Put('/articles/@slug', 'ArticleController@update').middleware('auth'),
-        Delete('/articles/@slug', 'ArticleController@delete').middleware('auth'),
-        Post('/articles/@slug/favorite', 'ArticleController@favorite').middleware('auth'),
-        Delete('/articles/@slug/favorite', 'ArticleController@unfavorite').middleware('auth'),
+
+        RouteGroup([
+            Post('', 'ArticleController@create'),
+            Get('/feed', 'ArticleController@feed'),
+            Put('/@slug', 'ArticleController@update'),
+            Delete('/@slug', 'ArticleController@delete'),
+            Post('/@slug/favorite', 'ArticleController@favorite'),
+            Delete('/@slug/favorite', 'ArticleController@unfavorite'),
+        ], prefix='/articles', middleware=('auth',)),
 
         # Comments
         RouteGroup([
