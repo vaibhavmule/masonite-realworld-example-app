@@ -21,7 +21,6 @@ ROUTES = [
 
         # Articles
         Get('/articles', 'ArticleController@index'),
-        Get('/articles/@slug', 'ArticleController@show'),
 
         RouteGroup([
             Post('', 'ArticleController@create'),
@@ -32,6 +31,7 @@ ROUTES = [
             Delete('/@slug/favorite', 'ArticleController@unfavorite'),
         ], prefix='/articles', middleware=('auth',)),
 
+        Get('/articles/@slug', 'ArticleController@show'),
         # Comments
         RouteGroup([
             Get('/comments', 'CommentController@index'),

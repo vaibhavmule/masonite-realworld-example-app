@@ -116,3 +116,10 @@ class TestArticle(TestCase):
         self.assertTrue(
             self.json('GET', '/api/articles/this-article').hasJson('article.slug', 'this-article')
         )
+
+    def test_can_get_article_feed(self):
+        self.assertTrue(
+            self.actingAs(User.find(1)).json('GET','/api/articles/feed').hasJson({
+                'articles': []
+            })
+        )

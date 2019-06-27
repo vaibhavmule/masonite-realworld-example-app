@@ -15,6 +15,7 @@ class ArticleController:
 
     def __init__(self, request: Request):
         self.request = request
+        self.user = request.user()
 
     def index(self):
         articles = Article.with_('author', 'favorites')
@@ -52,14 +53,14 @@ class ArticleController:
         return {'articles': list_of_articles, 'articlesCount': len(list_of_articles)}
 
     def feed(self):
-        users = self.request.user().followed_users().lists('user_id').serialize()
-        articles = Article.with_('author', 'favorites').where_in('author_id', users)
+        users = self.user.followed_users().lists('user_id').serialize()
+        articles = Article.with_('author', 'favorites').where_in('author_id', users).get()
         if articles:
             articles = articles.order_by('created_at', 'desc').paginate(
                 self.request.input('limit'),
                 self.request.input('offset')
             )
-        list_of_articles = [article.payload(self.request.user()) for article in articles]
+        list_of_articles = [article.payload(self.user) for article in articles]
         return {'articles': list_of_articles, 'articlesCount': len(list_of_articles)}
 
     def show(self, slug):
