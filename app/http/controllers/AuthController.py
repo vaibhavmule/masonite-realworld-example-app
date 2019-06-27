@@ -7,8 +7,11 @@ from app.User import User
 class AuthController:
 
     def login(self, request: Request, auth: Auth):
-        user_data = request.input('user')
-        if auth.once().login(user_data['email'], user_data['password']):
-            user = User.where('email', user_data['email']).first()
+        email = request.input('user.email')
+        password = request.input('user.password')
+        if auth.once().login(email, password):
+            user = User.where('email', email).first()
             user.generate_token()
             return {'user': user.serialize()}
+        request.status(400)
+        return {'error': 'username or password incorrect'}
