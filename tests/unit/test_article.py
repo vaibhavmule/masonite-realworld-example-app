@@ -1,14 +1,16 @@
 """TestArticle Testcase."""
 
 from masonite.testing import TestCase
+from masonite.helpers import password
+
 from app.Article import Article
 from app.User import User
 from app.Tag import Tag
 from masonite.helpers import password
+from app.Follow import Follow
 
 
 class TestArticle(TestCase):
-
     """All tests by default will run inside of a database transaction."""
     transactions = True
 
@@ -33,13 +35,15 @@ class TestArticle(TestCase):
         })
 
         User.create({
-            'username': 'Bob',
-            'email': 'bob@example.com',
-            'password': password('secret'),
-            'bio': 'This is a bio',
-            'image': '',
-            'token': None
+            'username': 'Bob123',
+            'email': 'Bob123@example.com',
+            'password': password('secret')
         })
+
+        Follow.first_or_create(
+            user_id=1,
+            follower_id=2
+        )
 
         Article.create({
             'title': 'this is a title',
@@ -132,7 +136,7 @@ class TestArticle(TestCase):
         User.find(2).favorite(1)
 
         self.json('GET', '/api/articles', {
-            'favorited': 'Bob'
+            'favorited': 'Bob123'
         }).hasAmount('articles', 1)
 
     def test_can_index_tags(self):
@@ -143,7 +147,7 @@ class TestArticle(TestCase):
     def test_can_index_multiple(self):
         User.find(2).favorite(1)
         self.json('GET', '/api/articles', {
-            'favorited': 'Bob',
+            'favorited': 'Bob123',
             'author': 'Joe'
         }).hasAmount('articles', 1)
 
@@ -164,4 +168,8 @@ class TestArticle(TestCase):
             self.actingAs(User.find(1)).json('GET','/api/articles/feed').hasJson({
                 'articles': []
             })
+        )
+
+        self.assertTrue(
+            self.actingAs(User.find(2)).json('GET', '/api/articles/feed').hasAmount('articles', 2)
         )

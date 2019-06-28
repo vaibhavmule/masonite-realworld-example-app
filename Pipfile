@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-masonite = "==2.2.2"
+masonite = "*"
 "psycopg2-binary" = "*"
 python-slugify = "*"
 PyJWT = "*"

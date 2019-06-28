@@ -48,7 +48,7 @@ class ArticleController:
 
     def feed(self):
         users = self.user.followed_users().lists('user_id').serialize()
-        articles = Article.with_('author', 'favorites').where_in('author_id', users).get()
+        articles = Article.with_('author', 'favorites').where_in('author_id', users)
         if articles:
             articles = articles.order_by('created_at', 'desc').paginate(
                 self.request.input('limit'),

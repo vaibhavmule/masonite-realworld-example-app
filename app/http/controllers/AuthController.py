@@ -13,5 +13,5 @@ class AuthController:
             user = User.where('email', email).first()
             user.generate_token()
             return {'user': user.serialize()}
-
+        request.status(400)
         return {'error': 'username or password incorrect'}
