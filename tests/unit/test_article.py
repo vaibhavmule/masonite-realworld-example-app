@@ -3,6 +3,7 @@
 from masonite.testing import TestCase
 from app.Article import Article
 from app.User import User
+from app.Tag import Tag
 from masonite.helpers import password
 
 
@@ -31,12 +32,25 @@ class TestArticle(TestCase):
             'token': None
         })
 
+        User.create({
+            'username': 'Bob',
+            'email': 'bob@example.com',
+            'password': password('secret'),
+            'bio': 'This is a bio',
+            'image': '',
+            'token': None
+        })
+
         Article.create({
             'title': 'this is a title',
             'slug': 'this-is-a-title',
             'description': 'This is a description',
             'body': 'this is a body',
             'author_id': 1
+        })
+
+        Tag.create({
+            'name': 'Python'
         })
 
     def test_can_create_article(self):
@@ -104,6 +118,34 @@ class TestArticle(TestCase):
         self.assertTrue(
             self.json('GET', '/api/articles').hasAmount('articles', 2)
         )
+
+    def test_can_index(self):
+        self.assertTrue(
+            self.json('GET', '/api/articles', {
+                'author': 'Joe',
+                'tag': 'python',
+                'favorited': 'Jake'
+            }).hasAmount('articles', 2)
+        )
+
+    def test_can_index_favorites(self):
+        User.find(2).favorite(1)
+
+        self.json('GET', '/api/articles', {
+            'favorited': 'Bob'
+        }).hasAmount('articles', 1)
+
+    def test_can_index_tags(self):
+        self.json('GET', '/api/articles', {
+            'tag': 'Python'
+        }).hasAmount('articles', 0)
+
+    def test_can_index_multiple(self):
+        User.find(2).favorite(1)
+        self.json('GET', '/api/articles', {
+            'favorited': 'Bob',
+            'author': 'Joe'
+        }).hasAmount('articles', 1)
 
     def test_can_show_single_json(self):
         Article.create({

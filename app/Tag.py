@@ -6,7 +6,12 @@ from config.database import Model
 
 
 class Tag(Model):
-    """Tag Model
+    """Model Definition (generated with love by Masonite) 
+
+    id: integer default: None
+    name: string(255) default: None
+    created_at: datetime default: CURRENT_TIMESTAMP
+    updated_at: datetime default: CURRENT_TIMESTAMP
     """
 
     __fillable__ = ['name']
