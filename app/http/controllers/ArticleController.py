@@ -19,38 +19,32 @@ class ArticleController:
 
     def index(self):
         articles = Article.with_('author', 'favorites')
-        user = User.where(
-            'username', self.request.input('author', '') or self.request.input('favorited', '')).first()
-        tag = Tag.where('name', self.request.input('tag', '')).first()
 
-        if self.request.input('author'):
-            try:
-                articles = user.articles().with_('author', 'favorites')
-            except:
-                articles = []
+        if self.request.has('author'):
+            user = User.where('username', self.request.input('author')).first()
 
-        if self.request.input('favorited'):
-            try:
-                article_ids = user.favorites().lists('article_id').serialize()
-            except:
-                article_ids = []
-        
-            articles = articles.where_in('id', article_ids)
+            if user:
+                articles.where('author_id', user.id)
 
-        if self.request.input('tag'):
-            try:
-                article_ids = tag.articles().lists('article_id').serialize()
-            except:
-                article_ids = []
-            articles = articles.where_in('id', article_ids)
+        if self.request.has('favorited'):
+            user = User.where('username', self.request.input('favorited')).first()
+            
+            if user:
+                articles.where_in('id', user.favorites.pluck('article_id'))
 
-        if articles:
-            articles = articles.order_by('created_at', 'desc').paginate(
-                self.request.input('limit'),
-                self.request.input('offset')
-            )
+        if self.request.has('tag'):
+            tag = Tag.where('name', self.request.input('tag')).first()
+            
+            if tag:
+                articles.where_in('id', tag.articles.pluck('id'))
+
+        articles = articles.order_by('created_at', 'desc').paginate(
+            self.request.input('limit', 20),
+            self.request.input('offset', 0)
+        )
+
         list_of_articles = [article.payload(self.request.user()) for article in articles]
-        return {'articles': list_of_articles, 'articlesCount': len(list_of_articles)}
+        return {'articles': list_of_articles, 'articlesCount': articles.count()}
 
     def feed(self):
         users = self.user.followed_users().lists('user_id').serialize()

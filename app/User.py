@@ -52,3 +52,10 @@ class User(Model):
     def followed_users(self):
         from app.Follow import Follow
         return Follow
+
+    def favorite(self, article_id):
+        from app.Favorite import Favorite
+        Favorite.create({
+            'user_id': self.id,
+            'article_id': article_id
+        })
